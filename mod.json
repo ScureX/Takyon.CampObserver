@@ -9,8 +9,18 @@
 			"Path": "takyon_campobserver.nut",
 			"RunOn": "SERVER",
 			"ServerCallback": {
-				"After": "takyon_campobserverInit"
+				"After": "CampObserverInit"
 			}
+		}
+	],
+	"ConVars": [
+		{
+			"Name": "co_minspeed", // kmh
+			"DefaultValue": "30"
+		},
+		{
+			"Name": "co_timetillreveal", // after how many seconds you get revealed
+			"DefaultValue": "5"
 		}
 	]
 }
