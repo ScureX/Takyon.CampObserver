@@ -1,0 +1,16 @@
+{
+	"Name": "Takyon.CampObserver",
+	"Description": "Highlights people who stay below a certain speed for some time",
+	"LoadPriority": 1,
+	"RequiredOnClient": false,
+	"Version": "0.0.1",
+	"Scripts": [
+		{
+			"Path": "takyon_campobserver.nut",
+			"RunOn": "SERVER",
+			"ServerCallback": {
+				"After": "takyon_campobserverInit"
+			}
+		}
+	]
+}
