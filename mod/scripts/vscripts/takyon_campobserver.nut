@@ -36,10 +36,10 @@ void function CampObserverMain(){
 					foreach(PlayerData pd in pdArr){
 						if(pd.uid == player.GetUID()){
 							pd.timeBelowMin = 0
-							Highlight_ClearEnemyHighlight(player)
 							try{
 								highlightedPlayers.remove(highlightedPlayers.find(player))
 								messagedUids.remove(messagedUids.find(player.GetUID()))
+								Highlight_ClearEnemyHighlight(player)
 								Chat_ServerPrivateMessage(player, "\x1b[34mCampObserver \x1b[32mis no longer highlighting your position.", false)
 							}catch(e){}
 						}
@@ -81,7 +81,9 @@ void function HighlightCampers(){
 	highlightCycleComplete = false
 
 	foreach(entity player in highlightedPlayers){
-		Highlight_SetEnemyHighlight(player, highlightCycles[highlightCycle])
+		try{
+			Highlight_SetEnemyHighlight(player, highlightCycles[highlightCycle])
+		}catch(e){}		
 	}
 
 	// will wrap around (i hope)
