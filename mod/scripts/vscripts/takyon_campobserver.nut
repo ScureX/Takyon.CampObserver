@@ -39,7 +39,8 @@ void function CampObserverMain(){
 							try{
 								highlightedPlayers.remove(highlightedPlayers.find(player))
 								messagedUids.remove(messagedUids.find(player.GetUID()))
-								Highlight_ClearEnemyHighlight(player)
+								if(IsValid(player))
+									Highlight_ClearEnemyHighlight(player)
 								Chat_ServerPrivateMessage(player, "\x1b[34mCampObserver \x1b[32mis no longer highlighting your position.", false)
 							}catch(e){}
 						}
@@ -82,7 +83,8 @@ void function HighlightCampers(){
 
 	foreach(entity player in highlightedPlayers){
 		try{
-			Highlight_SetEnemyHighlight(player, highlightCycles[highlightCycle])
+			if(IsValid(player))
+				Highlight_SetEnemyHighlight(player, highlightCycles[highlightCycle])
 		}catch(e){}		
 	}
 
