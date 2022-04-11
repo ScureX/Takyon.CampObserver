@@ -25,63 +25,60 @@ void function Playing(){
 }
 
 void function CampObserverMain(){
-	while(true){
-        WaitFrame()
-        if(!IsLobby()){
-			// loop thru every player
-			foreach(entity player in GetPlayerArray()){
+	while(!IsLobby()){
+		WaitFrame()
+		// loop thru every player
+		foreach(entity player in GetPlayerArray()){
 
-				if(!IsValid(player)){
+			if(!IsValid(player)){
+				continue
+			}
+
+			try{
+				// check if above speed requirement to clear the time below min speed and remove from highlight list
+				if(GetPlayerSpeed(player) > GetConVarFloat("co_minspeed") || !IsAlive(player)){
+					foreach(PlayerData pd in pdArr){
+						if(pd.uid == player.GetUID()){
+							pd.timeBelowMin = 0
+							try{
+								highlightedPlayers.remove(highlightedPlayers.find(player))
+								messagedUids.remove(messagedUids.find(player.GetUID()))
+								if(IsValid(player))
+									Highlight_ClearEnemyHighlight(player)
+								Chat_ServerPrivateMessage(player, "\x1b[34mCampObserver \x1b[32mis no longer highlighting your position.", false)
+							}catch(e){}
+						}
+					}
 					continue
 				}
 
-				try{
-					// check if above speed requirement to clear the time below min speed and remove from highlight list
-					if(GetPlayerSpeed(player) > GetConVarFloat("co_minspeed") || !IsAlive(player)){
-						foreach(PlayerData pd in pdArr){
-							if(pd.uid == player.GetUID()){
-								pd.timeBelowMin = 0
-								try{
-									highlightedPlayers.remove(highlightedPlayers.find(player))
-									messagedUids.remove(messagedUids.find(player.GetUID()))
-									if(IsValid(player))
-										Highlight_ClearEnemyHighlight(player)
-									Chat_ServerPrivateMessage(player, "\x1b[34mCampObserver \x1b[32mis no longer highlighting your position.", false)
-								}catch(e){}
-							}
-						}
-						continue
-					}
+				// find players data to increase time below min speed
+				foreach(PlayerData pd in pdArr){
+					if(pd.uid == player.GetUID()){
+						pd.timeBelowMin++ 
+						if(pd.timeBelowMin > GetConVarFloat("co_timetillreveal") && !pd.immune){
+							if(!highlightedPlayers.contains(player))
+								highlightedPlayers.append(player)
 
-					// find players data to increase time below min speed
-					foreach(PlayerData pd in pdArr){
-						if(pd.uid == player.GetUID()){
-							pd.timeBelowMin++ 
-							if(pd.timeBelowMin > GetConVarFloat("co_timetillreveal") && !pd.immune){
-								if(!highlightedPlayers.contains(player))
-									highlightedPlayers.append(player)
-
-								// notify
-								if(!messagedUids.contains(player.GetUID())){
-									Chat_ServerPrivateMessage(player, "\x1b[34mCampObserver \x1b[31mis highlighting your position. \x1b[32mMove faster!", false)
-									messagedUids.append(player.GetUID())
-								}
+							// notify
+							if(!messagedUids.contains(player.GetUID())){
+								Chat_ServerPrivateMessage(player, "\x1b[34mCampObserver \x1b[31mis highlighting your position. \x1b[32mMove faster!", false)
+								messagedUids.append(player.GetUID())
 							}
 						}
 					}
+				}
 
-					// highlight players
-					thread HighlightCampers()
-					wait 0.5 // speed check once every idk seconds
-					// scared of removing a player from the highlight list while its in use so this is my way to cope with threads doing thread things
-					while(!highlightCycleComplete){ 
-						WaitFrame()
-					}
-				}catch(fuckyou){continue}
-			}
+				// highlight players
+				thread HighlightCampers()
+				wait 0.5 // speed check once every idk seconds
+				// scared of removing a player from the highlight list while its in use so this is my way to cope with threads doing thread things
+				while(!highlightCycleComplete){ 
+					WaitFrame()
+				}
+			}catch(fuckyou){continue}
 		}
 	}
-	
 }
 
 void function HighlightCampers(){
