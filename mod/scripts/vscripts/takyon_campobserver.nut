@@ -37,7 +37,7 @@ void function CampObserverMain(){
 
 				try{
 					// check if above speed requirement to clear the time below min speed and remove from highlight list
-					if(GetPlayerSpeed(player) > GetConVarFloat("co_minspeed")){
+					if(GetPlayerSpeed(player) > GetConVarFloat("co_minspeed") || !IsAlive(player)){
 						foreach(PlayerData pd in pdArr){
 							if(pd.uid == player.GetUID()){
 								pd.timeBelowMin = 0
@@ -57,7 +57,7 @@ void function CampObserverMain(){
 					foreach(PlayerData pd in pdArr){
 						if(pd.uid == player.GetUID()){
 							pd.timeBelowMin++ 
-							if(pd.timeBelowMin > GetConVarInt("co_timetillreveal") && !pd.immune){
+							if(pd.timeBelowMin > GetConVarFloat("co_timetillreveal") && !pd.immune){
 								if(!highlightedPlayers.contains(player))
 									highlightedPlayers.append(player)
 
@@ -89,8 +89,12 @@ void function HighlightCampers(){
 
 	foreach(entity player in highlightedPlayers){
 		try{
-			if(IsValid(player))
+			//vector playerVelV = player.GetVelocity()
+			if(IsValid(player)){
 				Highlight_SetEnemyHighlight(player, highlightCycles[highlightCycle])
+				//PushEntWithVelocity( player, <rndint(250),rndint(250),300> )
+			}
+				
 		}catch(e){}		
 	}
 

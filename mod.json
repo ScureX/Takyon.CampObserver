@@ -19,8 +19,8 @@
 			"DefaultValue": "30"
 		},
 		{
-			"Name": "co_timetillreveal", // after how many seconds you get revealed
-			"DefaultValue": "5"
+			"Name": "co_timetillreveal", // after how many seconds you get revealed // not rly how many seconds, more like a rough estimate, also a float now
+			"DefaultValue": "5.5"
 		}
 	]
 }
